@@ -17,7 +17,7 @@ namespace wpXml2Jekyll
             var items = xmlDocumentToWrite.SelectNodes("//item");
             int postCount = 0;
             var namespaceManager = new XmlNamespaceManager(xmlDocumentToWrite.NameTable);
-            namespaceManager.AddNamespace("wp", "http://wordpress.org/export/1.2/");
+            namespaceManager.AddNamespace("wp", "http://wordpress.org/export/1.1/");
             namespaceManager.AddNamespace("content", "http://purl.org/rss/1.0/modules/content/");
             namespaceManager.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
             {

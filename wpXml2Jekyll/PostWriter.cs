@@ -23,8 +23,14 @@ namespace wpXml2Jekyll
             {
                 foreach (XmlNode item in items)
                 {
-                    
-                    String postType = item.SelectSingleNode("wp:post_type", namespaceManager).InnerText;
+                    var node = item.SelectSingleNode("wp:post_type", namespaceManager);
+
+                    if (node == null)
+                    {
+                        throw new Exception($"Cannot find {namespaceManager}.wp:post_type node.");
+                    }
+
+                    String postType = node.InnerText;
 
                     //check if the item is post,page or attachment
                     //attachments shouldn't be saved as a post

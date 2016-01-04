@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
@@ -15,6 +16,12 @@ namespace wpXml2Jekyll
         [STAThread]
         static void Main(string[] args)
         {
+#if DEBUG
+            if (args.Length == 0)
+            {
+                args = GetDebugArguments();
+            }
+#endif
             if (args.Length == 0)
             {
                 Application.EnableVisualStyles();
@@ -36,6 +43,28 @@ namespace wpXml2Jekyll
                 int count = new PostWriter().WritePostToMarkdown(posts, outputFolder);
                 Console.WriteLine("Saved " + count + " posts");
             }
+        }
+
+        private static string[] GetDebugArguments()
+        {
+            var repositoryRoot = Path.GetFullPath(@"..\..\..\..\..\");
+            var xmlFile = Path.Combine(repositoryRoot, @"site\theofficialwebsiteofnicolemurphy.wordpress.xml");
+            var outputDirectory = new DirectoryInfo(Path.Combine(repositoryRoot, @"artifacts\jekyll\posts"));
+
+            if (!File.Exists(xmlFile))
+            {
+                throw new FileNotFoundException($"Cannot find xmlFile '{xmlFile}'.");
+            }
+
+            if (outputDirectory.Exists)
+            {
+                Console.WriteLine($"Deleting output directory '{outputDirectory.FullName}'.");
+                outputDirectory.Delete(true);
+            }
+            Console.WriteLine($"Creating output directory '{outputDirectory.FullName}'.");
+            outputDirectory.Create();
+
+            return new[] {xmlFile, outputDirectory.FullName};
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
